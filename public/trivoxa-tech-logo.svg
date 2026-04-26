@@ -1,0 +1,18 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Trivoxa Tech logo">
+  <defs>
+    <linearGradient id="tv" x1="16" y1="18" x2="104" y2="102" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2563EB"/>
+      <stop offset="0.55" stop-color="#0EA5E9"/>
+      <stop offset="1" stop-color="#22D3EE"/>
+    </linearGradient>
+    <linearGradient id="tv2" x1="36" y1="30" x2="88" y2="96" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1D4ED8"/>
+      <stop offset="1" stop-color="#06B6D4"/>
+    </linearGradient>
+  </defs>
+  <rect width="120" height="120" rx="28" fill="#07111F"/>
+  <path d="M21 31H89L77 45H34L21 31Z" fill="url(#tv)"/>
+  <path d="M78 45L94 31H104L63 101L50 87L78 45Z" fill="url(#tv)"/>
+  <path d="M43 50H56V93L43 80V50Z" fill="url(#tv2)"/>
+  <path d="M60 52L67 67L76 52L65 86L60 52Z" fill="#38BDF8" fill-opacity="0.9"/>
+</svg>
