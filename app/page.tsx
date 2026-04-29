@@ -356,123 +356,128 @@ export default function Home() {
           <TestimonialsTicker />
         </motion.div>
       </motion.section> */}
+<motion.section
+  id="pricing"
+  variants={sectionReveal}
+  initial="hidden"
+  whileInView="visible"
+  viewport={{ once: true, margin: "-120px" }}
+  className="bg-forest px-4 py-14 text-white sm:px-6 lg:px-8"
+>
+  <div className="mx-auto grid max-w-6xl items-center gap-8 md:grid-cols-[0.9fr_1.1fr]">
+    <motion.div variants={cardReveal}>
+      <p className="mb-3 text-sm font-extrabold uppercase tracking-[0.28em] text-mint">
+        Pricing & Requirements
+      </p>
 
-      <motion.section
-        id="pricing"
-        variants={sectionReveal}
+      <h2 className="text-3xl font-black leading-tight sm:text-5xl">
+        Simple requirements and pricing model
+      </h2>
+
+      <p className="mt-5 text-base leading-7 text-mint/85 sm:text-lg sm:leading-8">
+        No upfront charges. You only share 10% of the final profits generated in
+        your trading account — keeping the model simple, fair, and
+        performance-driven.
+      </p>
+    </motion.div>
+
+    <motion.div
+      variants={softScale}
+      whileHover={{ y: -6 }}
+      transition={{ type: "spring", stiffness: 260, damping: 20 }}
+      className="rounded-[2rem] bg-white p-5 text-charcoal shadow-premium sm:p-7"
+    >
+      <div className="mb-5 flex items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-emeraldDeep sm:text-sm sm:tracking-[0.2em]">
+            Subscribing SwingNifty Strategy
+          </p>
+
+          <h3 className="mt-1 text-2xl font-black sm:text-3xl">
+            Requirements
+          </h3>
+        </div>
+
+        <IndianRupee
+          className="mt-2 shrink-0 text-emeraldDeep"
+          size={34}
+        />
+      </div>
+
+      <div className="mb-3 flex items-start gap-3 rounded-2xl bg-mintSoft p-4">
+        <CheckCircle2
+          className="mt-0.5 shrink-0 text-emeraldDeep"
+          size={18}
+        />
+
+        <span className="text-sm font-bold leading-6 sm:text-base">
+          Capital Requirement: ₹5L for trading 1 lot of Nifty Futures
+          <span className="block text-xs font-semibold text-charcoal/60 sm:text-sm">
+            Currently 65 units
+          </span>
+        </span>
+      </div>
+
+      <motion.div
+        variants={cardContainer}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: "-120px" }}
-        className="bg-forest px-4 py-14 text-white sm:px-6 lg:px-8"
+        viewport={{ once: true }}
+        className="grid gap-3"
       >
-        <div className="mx-auto grid max-w-6xl items-center gap-8 md:grid-cols-[0.9fr_1.1fr]">
-          <motion.div variants={cardReveal}>
-            <p className="mb-3 text-sm font-extrabold uppercase tracking-[0.28em] text-mint">
-              Pricing & Requirements
-            </p>
-
-            <h2 className="text-3xl font-black leading-tight sm:text-5xl">
-              Simple requirements and pricing model
-            </h2>
-
-            <p className="mt-5 text-lg leading-8 text-mint/85">
-              No upfront charges. You only share 10% of the final profits
-              generated in your trading account — keeping the model simple,
-              fair, and performance-driven.
-            </p>
-          </motion.div>
-
+        {[
+          "Demat Account",
+          "Tradetron Account",
+          "Strategy Deployment from Tradetron",
+        ].map((item) => (
           <motion.div
-            variants={softScale}
-            whileHover={{ y: -6 }}
-            transition={{ type: "spring", stiffness: 260, damping: 20 }}
-            className="rounded-[2rem] bg-white p-7 text-charcoal shadow-premium"
+            key={item}
+            variants={cardReveal}
+            className="flex items-start gap-3 rounded-2xl bg-mintSoft p-4"
           >
-            <div className="mb-5 flex items-start justify-between gap-4">
-              <div>
-                <p className="text-sm font-black uppercase tracking-[0.2em] text-emeraldDeep">
-                  Subscribing SwingNifty Strategy
-                </p>
-                <h3 className="mt-1 text-3xl font-black">Requirements</h3>
-              </div>
-
-              <IndianRupee
-                className="mt-2 shrink-0 text-emeraldDeep"
-                size={36}
-              />
-            </div>
-
-            <div className="mb-3 flex items-start gap-3 rounded-2xl bg-mintSoft p-4">
-              <CheckCircle2
-                className="mt-0.5 shrink-0 text-emeraldDeep"
-                size={18}
-              />
-              <span className="font-bold">
-                Capital Requirement: ₹5L for trading 1 lot of Nifty Futures
-                <span className="block text-sm font-semibold text-charcoal/60">
-                  Currently 65 units
-                </span>
-              </span>
-            </div>
-
-            <motion.div
-              variants={cardContainer}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              className="grid gap-3"
-            >
-              {[
-                "Demat Account",
-                "Tradetron Account",
-                "Strategy Deployment from Tradetron",
-              ].map((item) => (
-                <motion.div
-                  key={item}
-                  variants={cardReveal}
-                  className="flex items-start gap-3 rounded-2xl bg-mintSoft p-4"
-                >
-                  <CheckCircle2
-                    className="mt-0.5 shrink-0 text-emeraldDeep"
-                    size={18}
-                  />
-                  <span className="font-bold">{item}</span>
-                </motion.div>
-              ))}
-            </motion.div>
-
-            <div className="mt-6 flex items-center gap-3 overflow-x-auto whitespace-nowrap">
-              <motion.a
-                {...buttonMotion}
-                href="https://youtu.be/C5LIJXSBdIs"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[#CC0000] px-6 py-3 font-extrabold text-white shadow-lg transition hover:bg-[#CC0000]"
-              >
-                User Guide ▶
-              </motion.a>
-
-              <motion.a
-                {...buttonMotion}
-                href={TRADETRON_LINK}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex shrink-0 items-center justify-center rounded-full border border-forest/15 px-6 py-3 font-extrabold text-forest hover:bg-mintSoft"
-              >
-                Subscribe Strategy
-              </motion.a>
-
-              <motion.a
-                {...buttonMotion}
-                href="#contact"
-                className="inline-flex shrink-0 items-center justify-center rounded-full border border-forest/15 px-6 py-3 font-extrabold text-forest hover:bg-mintSoft"
-              >
-                Contact Us
-              </motion.a>
-            </div>
+            <CheckCircle2
+              className="mt-0.5 shrink-0 text-emeraldDeep"
+              size={18}
+            />
+            <span className="text-sm font-bold leading-6 sm:text-base">
+              {item}
+            </span>
           </motion.div>
-        </div>
-      </motion.section>
+        ))}
+      </motion.div>
+
+      <div className="mt-6 grid gap-3 sm:grid-cols-3">
+        <motion.a
+          {...buttonMotion}
+          href="https://youtu.be/C5LIJXSBdIs"
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#CC0000] px-5 py-3 text-center text-sm font-extrabold text-white shadow-lg transition hover:bg-[#B00000] sm:text-base"
+        >
+          User Guide ▶
+        </motion.a>
+
+        <motion.a
+          {...buttonMotion}
+          href={TRADETRON_LINK}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex w-full items-center justify-center rounded-full border border-forest/15 px-5 py-3 text-center text-sm font-extrabold text-forest transition hover:bg-mintSoft sm:text-base"
+        >
+          Subscribe Strategy
+        </motion.a>
+
+        <motion.a
+          {...buttonMotion}
+          href="#contact"
+          className="inline-flex w-full items-center justify-center rounded-full border border-forest/15 px-5 py-3 text-center text-sm font-extrabold text-forest transition hover:bg-mintSoft sm:text-base"
+        >
+          Contact Us
+        </motion.a>
+      </div>
+    </motion.div>
+  </div>
+</motion.section>
 
       <motion.section
         id="about"
