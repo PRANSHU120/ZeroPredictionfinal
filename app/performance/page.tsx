@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import {
   AlertCircle,
   CheckCircle2,
-  ExternalLink,
   FileSpreadsheet,
   Info,
   ArrowLeft,
@@ -13,16 +12,13 @@ import {
 type PerformanceRow = {
   month: string;
   trades: string;
-  grossPnl: string;
   netPnl: string;
-  roi: string;
+  cagr: string;
 };
 
 const LOCAL_FALLBACK_CSV = "/data/performance.csv";
 const GOOGLE_SHEET_CSV_URL =
   process.env.NEXT_PUBLIC_GOOGLE_SHEET_CSV_URL || LOCAL_FALLBACK_CSV;
-
-const ZERODHA_PNL_LINK = "https://console.zerodha.com/verified/2afb85b4";
 
 function parseCSV(text: string): string[][] {
   const rows: string[][] = [];
@@ -35,7 +31,7 @@ function parseCSV(text: string): string[][] {
     const nextChar = text[i + 1];
 
     if (char === '"' && insideQuotes && nextChar === '"') {
-      current += '"';
+     current += '"';
       i += 1;
     } else if (char === '"') {
       insideQuotes = !insideQuotes;
@@ -67,7 +63,77 @@ function findColumn(
   const index = headers.findIndex((header) =>
     matchers.some((matcher) => matcher(header))
   );
+
   return index >= 0 ? index : fallback;
+}
+
+function formatMonth(value: string): string {
+  if (!value || value === "-") return "-";
+
+  const clean = value.trim();
+
+  const directMatch = clean.toUpperCase().match(/^([A-Z]{3})[-\s]+(\d{4})$/);
+
+  if (directMatch) {
+    return `${directMatch[1]}-${directMatch[2]}`;
+  }
+
+  const date = new Date(clean);
+
+  if (!Number.isNaN(date.getTime())) {
+    const month = date
+      .toLocaleString("en-US", { month: "short" })
+      .toUpperCase();
+
+    const year = date.getFullYear();
+
+    return `${month}-${year}`;
+  }
+
+  return clean.replace(/\s+/g, "").toUpperCase();
+}
+
+function cleanTrades(value: string): string {
+  const cleaned = value.replace(/[^0-9]/g, "");
+  return cleaned || "0";
+}
+
+function numberFromMoney(value: string): number {
+  const cleaned = value.replace(/[^0-9.-]/g, "");
+  const parsed = Number(cleaned);
+
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function formatCurrency(value: number): string {
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(value);
+}
+
+function formatNumber(value: string): string {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed.toLocaleString("en-IN") : value;
+}
+
+function pnlClass(value: string) {
+  const amount = numberFromMoney(value);
+
+  if (amount < 0) return "text-red-600";
+  if (amount > 0) return "text-emeraldDeep";
+
+  return "text-charcoal";
+}
+
+function cagrClass(value: string) {
+  const amount = numberFromMoney(value);
+
+  if (amount < 0) return "text-red-600";
+  if (amount > 0) return "text-emeraldDeep";
+
+  return "text-charcoal";
 }
 
 function mapPerformanceRows(text: string): PerformanceRow[] {
@@ -90,63 +156,38 @@ function mapPerformanceRows(text: string): PerformanceRow[] {
     1
   );
 
-  const grossPnlIndex = findColumn(
+  const netPnlIndex = findColumn(
     normalizedHeaders,
-    [(h) => h.includes("gross") && h.includes("pnl")],
+    [
+      (h) => h.includes("net") && h.includes("pnl"),
+      (h) => h === "pnl",
+    ],
     2
   );
 
-  const netPnlIndex = findColumn(
+  const cagrIndex = findColumn(
     normalizedHeaders,
-    [(h) => h.includes("net") && h.includes("pnl"), (h) => h === "pnl"],
+    [
+      (h) => h.includes("cagr"),
+      (h) => h.includes("roi"),
+      (h) => h.includes("return"),
+    ],
     3
   );
 
-  const roiIndex = findColumn(
-    normalizedHeaders,
-    [(h) => h.includes("roi")],
-    4
-  );
-
   return dataRows
-    .map((cells) => {
-      const net = cells[netPnlIndex] || cells[2] || "-";
-
-      return {
-        month: cells[monthIndex] || "-",
-        trades: cells[tradesIndex] || "-",
-        grossPnl: cells[grossPnlIndex] || net,
-        netPnl: net,
-        roi: cells[roiIndex] || "-",
-      };
-    })
+    .map((cells) => ({
+      month: formatMonth(cells[monthIndex] || "-"),
+      trades: cleanTrades(cells[tradesIndex] || "0"),
+      netPnl: cells[netPnlIndex] || "-",
+      cagr: cells[cagrIndex] || "-",
+    }))
     .filter(
       (item) =>
         item.month !== "-" &&
         item.month.toLowerCase() !== "month" &&
         item.month.toLowerCase() !== "date"
     );
-}
-
-function numberFromMoney(value: string): number {
-  const cleaned = value.replace(/[^0-9.-]/g, "");
-  const parsed = Number(cleaned);
-  return Number.isFinite(parsed) ? parsed : 0;
-}
-
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-    maximumFractionDigits: 0,
-  }).format(value);
-}
-
-function pnlClass(value: string) {
-  const amount = numberFromMoney(value);
-  if (amount < 0) return "text-red-600";
-  if (amount > 0) return "text-emeraldDeep";
-  return "text-charcoal";
 }
 
 export default function FullPerformancePage() {
@@ -182,6 +223,7 @@ export default function FullPerformancePage() {
         }
 
         setRows(parsedRows.reverse());
+
         setUpdatedAt(
           new Date().toLocaleString("en-IN", {
             dateStyle: "medium",
@@ -205,12 +247,7 @@ export default function FullPerformancePage() {
     const oldest = rows[rows.length - 1];
 
     const totalTrades = rows.reduce(
-      (sum, row) => sum + numberFromMoney(row.trades),
-      0
-    );
-
-    const grossPnl = rows.reduce(
-      (sum, row) => sum + numberFromMoney(row.grossPnl),
+      (sum, row) => sum + Number(cleanTrades(row.trades)),
       0
     );
 
@@ -222,11 +259,9 @@ export default function FullPerformancePage() {
     return {
       evaluationPeriod:
         oldest && latest ? `${oldest.month} - ${latest.month}` : "-",
-      totalTrades: totalTrades || "-",
-      grossPnl,
+      totalTrades: totalTrades.toString(),
       netPnl,
-      systemCagr: latest?.roi || "-",
-      marketCagr: process.env.NEXT_PUBLIC_MARKET_CAGR || "9%",
+      cagr: latest?.cagr || "-",
     };
   }, [rows]);
 
@@ -255,46 +290,34 @@ export default function FullPerformancePage() {
 
               <p className="mt-3 max-w-3xl text-sm leading-6 text-charcoal/65">
                 The below performance is shown as per trading one lot of Nifty
-                Futures for which the indicative capital required is ₹5L.
+                Futures current lot size: 65 units for which the capital
+                required is ₹5L.
               </p>
             </div>
 
-            <div className="mt-6 grid gap-4 md:grid-cols-5">
-              <div className="rounded-2xl bg-white p-4 shadow-sm">
+            <div className="mt-6 grid gap-4 md:grid-cols-4">
+              <div className="rounded-2xl bg-white p-4 text-center shadow-sm">
                 <p className="text-xs font-black uppercase tracking-[0.16em] text-charcoal/45">
                   Evaluation Period
                 </p>
                 <p className="mt-2 text-base font-black text-charcoal">
                   {summary.evaluationPeriod}
                 </p>
+                <p className="mt-2 text-[11px] font-semibold text-charcoal/45">
+                  36 Months
+                </p>
               </div>
 
-              <div className="rounded-2xl bg-white p-4 shadow-sm">
+              <div className="rounded-2xl bg-white p-4 text-center shadow-sm">
                 <p className="text-xs font-black uppercase tracking-[0.16em] text-charcoal/45">
                   Total Trades
                 </p>
                 <p className="mt-2 text-lg font-black text-charcoal">
-                  {summary.totalTrades}
+                  {formatNumber(summary.totalTrades)}
                 </p>
               </div>
 
-              <div className="rounded-2xl bg-white p-4 shadow-sm">
-                <p className="text-xs font-black uppercase tracking-[0.16em] text-charcoal/45">
-                  Gross PNL
-                </p>
-                <p
-                  className={`mt-2 text-lg font-black ${pnlClass(
-                    String(summary.grossPnl)
-                  )}`}
-                >
-                  {formatCurrency(summary.grossPnl)}
-                </p>
-                <p className="mt-1 text-[11px] font-semibold text-charcoal/45">
-                  Current lot size: 65 units
-                </p>
-              </div>
-
-              <div className="rounded-2xl bg-white p-4 shadow-sm">
+              <div className="rounded-2xl bg-white p-4 text-center shadow-sm">
                 <p className="text-xs font-black uppercase tracking-[0.16em] text-charcoal/45">
                   Net PNL
                 </p>
@@ -305,18 +328,27 @@ export default function FullPerformancePage() {
                 >
                   {formatCurrency(summary.netPnl)}
                 </p>
+                <p className="mt-1 text-[11px] font-semibold text-charcoal/45">
+                  Considering 0.1% Transaction cost
+                </p>
               </div>
 
-              <div className="rounded-2xl bg-white p-4 shadow-sm">
-                <p className="mt-2 text-lg font-black text-charcoal">
-                  {summary.systemCagr}
+              <div className="rounded-2xl bg-white p-4 text-center shadow-sm">
+                <p className="text-xs font-black uppercase tracking-[0.16em] text-charcoal/45">
+                  CAGR
+                </p>
+                <p className={`mt-2 text-lg font-black ${cagrClass(summary.cagr)}`}>
+                  {summary.cagr}
+                </p>
+                <p className="mt-1 text-[11px] font-semibold text-charcoal/45">
+                  Market CAGR: 12%
                 </p>
               </div>
             </div>
 
             <div className="mt-4 flex flex-col gap-2 text-xs font-semibold text-charcoal/55 sm:flex-row sm:items-center sm:justify-between">
               <span>Last synced: {updatedAt || "Not loaded yet"}</span>
-              <span>Read-only public performance view</span>
+              <span></span>
             </div>
           </div>
 
@@ -348,16 +380,13 @@ export default function FullPerformancePage() {
               <table className="w-full min-w-[760px] text-left text-sm">
                 <thead className="bg-white text-charcoal/70">
                   <tr>
-                    {[
-                      "Month",
-                      "Number of Trades",
-                      "Gross PNL",
-                      "Net PNL",
-                    ].map((header) => (
-                      <th key={header} className="px-6 py-4 font-black">
-                        {header}
-                      </th>
-                    ))}
+                    {["Month", "Number of Trades", "Net PNL", "Returns"].map(
+                      (header) => (
+                        <th key={header} className="px-6 py-4 font-black">
+                          {header}
+                        </th>
+                      )
+                    )}
                   </tr>
                 </thead>
 
@@ -370,14 +399,17 @@ export default function FullPerformancePage() {
                       <td className="px-6 py-4 font-bold text-charcoal">
                         {row.month}
                       </td>
+
                       <td className="px-6 py-4 font-bold text-charcoal/75">
-                        {row.trades}
+                        {formatNumber(row.trades)}
                       </td>
-                      <td className={`px-6 py-4 font-bold ${pnlClass(row.grossPnl)}`}>
-                        {row.grossPnl}
-                      </td>
+
                       <td className={`px-6 py-4 font-bold ${pnlClass(row.netPnl)}`}>
                         {row.netPnl}
+                      </td>
+
+                      <td className={`px-6 py-4 font-bold ${cagrClass(row.cagr)}`}>
+                        {row.cagr}
                       </td>
                     </tr>
                   ))}
@@ -403,7 +435,6 @@ export default function FullPerformancePage() {
               </div>
             </div>
           </div>
-
         </section>
       </div>
     </main>

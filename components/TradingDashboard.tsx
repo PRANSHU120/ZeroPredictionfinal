@@ -6,7 +6,7 @@ export default function TradingDashboard() {
       <div className="rounded-[1.5rem] bg-charcoal p-5 text-white">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <p className="text-sm text-white/50">Well-define Trading System</p>
+            <p className="text-sm text-white/50">Well-defined Trading System</p>
             <h3 className="mt-1 text-2xl font-black">SwingNifty</h3>
           </div>
           <div className="rounded-full bg-mint px-3 py-1 text-xs font-bold text-forest">Disciplined</div>
