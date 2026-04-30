@@ -182,8 +182,6 @@ export default function Home() {
               <motion.a
                 {...buttonMotion}
                 href="#pricing"
-                target="_blank"
-                rel="noreferrer"
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-forest px-7 py-4 font-extrabold text-white shadow-glow"
               >
                 Get Started <ArrowRight size={18} />
@@ -202,7 +200,7 @@ export default function Home() {
                 href={TRADETRON_LINK}
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-emerald-900/15 bg-white px-7 py-4 font-extrabold text-forest shadow-sm"
               >
-                Suscribe Strategy
+                Subscribe Strategy
               </motion.a>
 
               
