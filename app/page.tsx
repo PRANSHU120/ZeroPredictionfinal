@@ -191,6 +191,14 @@ export default function Home() {
 
               <motion.a
                 {...buttonMotion}
+                href="#performance"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-emerald-900/15 bg-white px-7 py-4 font-extrabold text-forest shadow-sm"
+              >
+                View Performance
+              </motion.a>
+
+              <motion.a
+                {...buttonMotion}
                 href={TRADETRON_LINK}
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-emerald-900/15 bg-white px-7 py-4 font-extrabold text-forest shadow-sm"
               >
@@ -199,13 +207,7 @@ export default function Home() {
 
               
 
-              <motion.a
-                {...buttonMotion}
-                href="#performance"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-emerald-900/15 bg-white px-7 py-4 font-extrabold text-forest shadow-sm"
-              >
-                View Performance
-              </motion.a>
+              
             </div>
           </motion.div>
 
