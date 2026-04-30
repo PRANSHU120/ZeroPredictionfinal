@@ -5,25 +5,39 @@ import { useState } from "react";
 import LogoMark from "./LogoMark";
 
 const links = [
-  ["Purpose", "#purpose"],
-  ["Offering", "#offering"],
-  ["Performance", "#performance"],
- /*  ["Testimonials", "#testimonials"], */
-  ["About", "#about"],
-  ["Podcasts", "#insights"],
-  ["Contact", "#contact"],
+  ["Purpose", "purpose"],
+  ["Offering", "offering"],
+  ["Performance", "performance"],
+  ["About", "about"],
+  ["Podcasts", "insights"],
+  ["Contact", "contact"],
 ];
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
 
+  const scrollToSection = (id: string) => {
+    const section = document.getElementById(id);
+
+    if (section) {
+      section.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+
+      window.history.replaceState(null, "", `#${id}`);
+    }
+
+    setOpen(false);
+  };
+
   return (
     <header className="fixed left-0 top-0 z-50 w-full border-b border-gray-100 bg-white/95 shadow-sm backdrop-blur">
       <nav className="mx-auto flex h-[86px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <a
-          href="#hero"
-          className="flex items-center gap-3 font-bold text-forest"
-          onClick={() => setOpen(false)}
+        <button
+          type="button"
+          className="flex items-center gap-3 text-left font-bold text-forest"
+          onClick={() => scrollToSection("hero")}
         >
           <LogoMark />
           <span className="leading-tight">
@@ -33,28 +47,31 @@ export default function Navbar() {
               Your Gateway to Extra Income
             </span>
           </span>
-        </a>
+        </button>
 
         <div className="hidden items-center gap-7 md:flex">
-          {links.map(([label, href]) => (
-            <a
-              key={href}
-              href={href}
+          {links.map(([label, id]) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => scrollToSection(id)}
               className="text-sm font-semibold text-charcoal/75 transition hover:text-emeraldDeep"
             >
               {label}
-            </a>
+            </button>
           ))}
 
-          <a
-            href="#pricing"
+          <button
+            type="button"
+            onClick={() => scrollToSection("pricing")}
             className="rounded-full bg-forest px-5 py-2.5 text-sm font-bold text-white shadow-premium transition hover:scale-105"
           >
             Get Started
-          </a>
+          </button>
         </div>
 
         <button
+          type="button"
           aria-label="Toggle menu"
           className="md:hidden"
           onClick={() => setOpen((value) => !value)}
@@ -65,24 +82,24 @@ export default function Navbar() {
 
       {open && (
         <div className="space-y-4 border-t bg-white px-4 py-4 md:hidden">
-          {links.map(([label, href]) => (
-            <a
-              key={href}
-              href={href}
-              onClick={() => setOpen(false)}
-              className="block text-sm font-semibold text-charcoal/75"
+          {links.map(([label, id]) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => scrollToSection(id)}
+              className="block w-full text-left text-sm font-semibold text-charcoal/75"
             >
               {label}
-            </a>
+            </button>
           ))}
 
-          <a
-            href="#pricing"
-            onClick={() => setOpen(false)}
-            className="block rounded-full bg-forest px-5 py-2.5 text-center text-sm font-bold text-white"
+          <button
+            type="button"
+            onClick={() => scrollToSection("pricing")}
+            className="block w-full rounded-full bg-forest px-5 py-2.5 text-center text-sm font-bold text-white"
           >
             Get Started
-          </a>
+          </button>
         </div>
       )}
     </header>

@@ -31,7 +31,7 @@ function parseCSV(text: string): string[][] {
     const nextChar = text[i + 1];
 
     if (char === '"' && insideQuotes && nextChar === '"') {
-     current += '"';
+      current += '"';
       i += 1;
     } else if (char === '"') {
       insideQuotes = !insideQuotes;
@@ -58,10 +58,10 @@ function parseCSV(text: string): string[][] {
 function findColumn(
   headers: string[],
   matchers: ((header: string) => boolean)[],
-  fallback: number
+  fallback: number,
 ) {
   const index = headers.findIndex((header) =>
-    matchers.some((matcher) => matcher(header))
+    matchers.some((matcher) => matcher(header)),
   );
 
   return index >= 0 ? index : fallback;
@@ -141,28 +141,25 @@ function mapPerformanceRows(text: string): PerformanceRow[] {
   const [headers = [], ...dataRows] = csvRows;
 
   const normalizedHeaders = headers.map((header) =>
-    header.trim().toLowerCase()
+    header.trim().toLowerCase(),
   );
 
   const monthIndex = findColumn(
     normalizedHeaders,
     [(h) => ["month", "date"].includes(h)],
-    0
+    0,
   );
 
   const tradesIndex = findColumn(
     normalizedHeaders,
     [(h) => h.includes("trade")],
-    1
+    1,
   );
 
   const netPnlIndex = findColumn(
     normalizedHeaders,
-    [
-      (h) => h.includes("net") && h.includes("pnl"),
-      (h) => h === "pnl",
-    ],
-    2
+    [(h) => h.includes("net") && h.includes("pnl"), (h) => h === "pnl"],
+    2,
   );
 
   const cagrIndex = findColumn(
@@ -172,7 +169,7 @@ function mapPerformanceRows(text: string): PerformanceRow[] {
       (h) => h.includes("roi"),
       (h) => h.includes("return"),
     ],
-    3
+    3,
   );
 
   return dataRows
@@ -186,7 +183,7 @@ function mapPerformanceRows(text: string): PerformanceRow[] {
       (item) =>
         item.month !== "-" &&
         item.month.toLowerCase() !== "month" &&
-        item.month.toLowerCase() !== "date"
+        item.month.toLowerCase() !== "date",
     );
 }
 
@@ -206,12 +203,12 @@ export default function FullPerformancePage() {
           `${GOOGLE_SHEET_CSV_URL}${
             GOOGLE_SHEET_CSV_URL.includes("?") ? "&" : "?"
           }cacheBust=${Date.now()}`,
-          { cache: "no-store" }
+          { cache: "no-store" },
         );
 
         if (!response.ok) {
           throw new Error(
-            "Performance sheet could not be loaded. Please check the published CSV link."
+            "Performance sheet could not be loaded. Please check the published CSV link.",
           );
         }
 
@@ -228,11 +225,13 @@ export default function FullPerformancePage() {
           new Date().toLocaleString("en-IN", {
             dateStyle: "medium",
             timeStyle: "short",
-          })
+          }),
         );
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "Unable to load performance data."
+          err instanceof Error
+            ? err.message
+            : "Unable to load performance data.",
         );
       } finally {
         setLoading(false);
@@ -248,12 +247,12 @@ export default function FullPerformancePage() {
 
     const totalTrades = rows.reduce(
       (sum, row) => sum + Number(cleanTrades(row.trades)),
-      0
+      0,
     );
 
     const netPnl = rows.reduce(
       (sum, row) => sum + numberFromMoney(row.netPnl),
-      0
+      0,
     );
 
     return {
@@ -287,12 +286,6 @@ export default function FullPerformancePage() {
               <h1 className="text-3xl font-black text-charcoal sm:text-5xl">
                 Full Performance View
               </h1>
-
-              <p className="mt-3 max-w-3xl text-sm leading-6 text-charcoal/65">
-                The below performance is shown as per trading one lot of Nifty
-                Futures current lot size: 65 units for which the capital
-                required is ₹5L.
-              </p>
             </div>
 
             <div className="mt-6 grid gap-4 md:grid-cols-4">
@@ -304,7 +297,7 @@ export default function FullPerformancePage() {
                   {summary.evaluationPeriod}
                 </p>
                 <p className="mt-2 text-[11px] font-semibold text-charcoal/45">
-                  36 Months
+                  Last 12 months
                 </p>
               </div>
 
@@ -323,26 +316,18 @@ export default function FullPerformancePage() {
                 </p>
                 <p
                   className={`mt-2 text-lg font-black ${pnlClass(
-                    String(summary.netPnl)
+                    String(summary.netPnl),
                   )}`}
                 >
                   {formatCurrency(summary.netPnl)}
-                </p>
-                <p className="mt-1 text-[11px] font-semibold text-charcoal/45">
-                  Considering 0.1% Transaction cost
                 </p>
               </div>
 
               <div className="rounded-2xl bg-white p-4 text-center shadow-sm">
                 <p className="text-xs font-black uppercase tracking-[0.16em] text-charcoal/45">
-                  CAGR
+                  AVG CAPITAL USED
                 </p>
-                <p className={`mt-2 text-lg font-black ${cagrClass(summary.cagr)}`}>
-                  {summary.cagr}
-                </p>
-                <p className="mt-1 text-[11px] font-semibold text-charcoal/45">
-                  Market CAGR: 12%
-                </p>
+                <p className={`mt-2 text-m font-black`}>21.25 L</p>
               </div>
             </div>
 
@@ -377,15 +362,15 @@ export default function FullPerformancePage() {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[760px] text-left text-sm">
-                <thead className="bg-white text-charcoal/70">
+              <table className="w-full min-w-[760px] text-left text-sm text-centre">
+                <thead className="bg-white text-charcoal/70 text-center">
                   <tr>
                     {["Month", "Number of Trades", "Net PNL", "Returns"].map(
                       (header) => (
-                        <th key={header} className="px-6 py-4 font-black">
+                        <th key={header} className="px-6 py-4 font-black ">
                           {header}
                         </th>
-                      )
+                      ),
                     )}
                   </tr>
                 </thead>
@@ -394,21 +379,25 @@ export default function FullPerformancePage() {
                   {rows.map((row, index) => (
                     <tr
                       key={`${row.month}-${index}`}
-                      className="border-t border-emerald-900/10 transition hover:bg-mintSoft/50"
+                      className="border-t border-emerald-900/10 transition hover:bg-mintSoft/50 text-center"
                     >
-                      <td className="px-6 py-4 font-bold text-charcoal">
+                      <td className="px-6 py-4 font-bold text-charcoal text-center">
                         {row.month}
                       </td>
 
-                      <td className="px-6 py-4 font-bold text-charcoal/75">
+                      <td className="px-6 py-4 font-bold text-charcoal/75 text-centre">
                         {formatNumber(row.trades)}
                       </td>
 
-                      <td className={`px-6 py-4 font-bold ${pnlClass(row.netPnl)}`}>
+                      <td
+                        className={`px-6 py-4 font-bold ${pnlClass(row.netPnl)}`}
+                      >
                         {row.netPnl}
                       </td>
 
-                      <td className={`px-6 py-4 font-bold ${cagrClass(row.cagr)}`}>
+                      <td
+                        className={`px-6 py-4 font-bold ${cagrClass(row.cagr)}`}
+                      >
                         {row.cagr}
                       </td>
                     </tr>

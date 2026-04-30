@@ -480,64 +480,69 @@ export default function Home() {
 </motion.section>
 
       <motion.section
-        id="about"
-        variants={sectionReveal}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-120px" }}
-        className="bg-white px-4 py-16 sm:px-6 lg:px-8"
+  id="about"
+  variants={sectionReveal}
+  initial="hidden"
+  whileInView="visible"
+  viewport={{ once: true, margin: "-120px" }}
+  className="bg-white px-4 py-16 sm:px-6 lg:px-8"
+>
+  <div className="mx-auto max-w-7xl rounded-[2.5rem] border border-emerald-900/10 bg-mintSoft p-6 shadow-premium md:p-10 lg:p-14">
+    {/* Heading above photo */}
+    <motion.div variants={cardReveal} className="mb-10 text-center">
+      <p className="mb-3 text-sm font-extrabold uppercase tracking-[0.28em] text-emeraldDeep">
+        About Us
+      </p>
+
+      <h2 className="text-3xl font-black tracking-[-0.03em] text-charcoal sm:text-5xl">
+        Meet the Founder: Siddharth Bisen
+      </h2>
+    </motion.div>
+
+    <div className="grid items-center gap-10 md:grid-cols-[0.9fr_1.1fr]">
+      <motion.div
+        variants={softScale}
+        className="relative mx-auto w-full max-w-md"
       >
-        <div className="mx-auto grid max-w-7xl items-center gap-10 rounded-[2.5rem] border border-emerald-900/10 bg-mintSoft p-6 shadow-premium md:grid-cols-[0.9fr_1.1fr] md:p-10 lg:p-14">
-          <motion.div
-            variants={softScale}
-            className="relative mx-auto w-full max-w-md"
-          >
-            <div className="absolute -inset-4 rounded-[2.5rem] bg-emerald-300/20 blur-2xl" />
-            <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-forest to-emeraldDeep p-4">
-              <img
-                src="/siddharthProfile.png"
-                alt="Siddharth Bisen, Founder of ZeroPrediction"
-                className="mx-auto h-auto w-full object-contain"
-              />
-            </div>
-          </motion.div>
-
-          <motion.div variants={cardReveal}>
-            <p className="mb-3 text-sm font-extrabold uppercase tracking-[0.28em] text-emeraldDeep">
-              About Us
-            </p>
-
-            <h2 className="text-3xl font-black tracking-[-0.03em] text-charcoal sm:text-5xl">
-              Meet the Founder: Siddharth Bisen
-            </h2>
-
-            <div className="mt-6 space-y-5 text-lg leading-8 text-charcoal/70">
-              <p>
-                Siddharth Bisen is the founder of{" "}
-                <strong className="text-charcoal">
-                  ZeroPrediction (OPC) Pvt. Ltd.
-                </strong>{" "}
-                An alumnus of BITS Pilani, Siddharth holds a Master’s in
-                Mathematics and a Bachelor’s in Chemical Engineering.
-              </p>
-
-              <p>
-                He has over 13 years of experience in the Oil & Gas industry,
-                working with firms including Lummus Technology, UOP Honeywell,
-                Fluor Corporation, Toyo Engineering, and AVEVA Solutions.
-              </p>
-
-              <p>
-                Since 2020, he has advocated stock market trading as a reliable
-                secondary income stream. By maintaining his corporate career
-                while managing the automated SwingNifty system, Siddharth
-                demonstrates how working professionals can approach wealth
-                creation without constant market monitoring.
-              </p>
-            </div>
-          </motion.div>
+        <div className="absolute -inset-4 rounded-[2.5rem] bg-emerald-300/20 blur-2xl" />
+        <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-forest to-emeraldDeep p-4">
+          <img
+            src="/siddharthProfile.png"
+            alt="Siddharth Bisen, Founder of ZeroPrediction"
+            className="mx-auto h-auto w-full object-contain"
+          />
         </div>
-      </motion.section>
+      </motion.div>
+
+      <motion.div variants={cardReveal}>
+        <div className="space-y-5 text-lg leading-8 text-charcoal/70">
+          <p>
+            Siddharth Bisen is the founder of{" "}
+            <strong className="text-charcoal">
+              ZeroPrediction (OPC) Pvt. Ltd.
+            </strong>{" "}
+            An alumnus of BITS Pilani, Siddharth holds a Master’s in Mathematics
+            and a Bachelor’s in Chemical Engineering.
+          </p>
+
+          <p>
+            He has over 13 years of experience in the Oil & Gas industry,
+            working with firms including Lummus Technology, UOP Honeywell, Fluor
+            Corporation, Toyo Engineering, and AVEVA Solutions.
+          </p>
+
+          <p>
+            Since 2020, he has advocated stock market trading as a reliable
+            secondary income stream. By maintaining his corporate career while
+            managing the automated SwingNifty system, Siddharth demonstrates how
+            working professionals can approach wealth creation without constant
+            market monitoring.
+          </p>
+        </div>
+      </motion.div>
+    </div>
+  </div>
+</motion.section>
 
       <motion.section
         id="insights"
