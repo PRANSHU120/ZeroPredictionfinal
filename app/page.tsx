@@ -178,15 +178,26 @@ export default function Home() {
             </p>
 
             <div className="mt-9 flex flex-col gap-4 sm:flex-row">
+
               <motion.a
                 {...buttonMotion}
-                href={TRADETRON_LINK}
+                href="#pricing"
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-forest px-7 py-4 font-extrabold text-white shadow-glow"
               >
-                Subscribe Strategy <ArrowRight size={18} />
+                Get Started <ArrowRight size={18} />
               </motion.a>
+
+              <motion.a
+                {...buttonMotion}
+                href={TRADETRON_LINK}
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-emerald-900/15 bg-white px-7 py-4 font-extrabold text-forest shadow-sm"
+              >
+                Suscribe Strategy
+              </motion.a>
+
+              
 
               <motion.a
                 {...buttonMotion}

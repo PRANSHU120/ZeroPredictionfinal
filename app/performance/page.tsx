@@ -365,7 +365,7 @@ export default function FullPerformancePage() {
               <table className="w-full min-w-[760px] text-left text-sm text-centre">
                 <thead className="bg-white text-charcoal/70 text-center">
                   <tr>
-                    {["Month", "Number of Trades", "Net PNL", "Returns"].map(
+                    {["Month", "Number of Trades", "Net PNL", "Capital Used"].map(
                       (header) => (
                         <th key={header} className="px-6 py-4 font-black ">
                           {header}

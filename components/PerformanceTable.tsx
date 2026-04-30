@@ -306,7 +306,7 @@ export default function PerformanceTable() {
             <p className="text-xs font-black uppercase tracking-[0.16em] text-charcoal/45">
               Avg Capital Used
             </p>
-            <p className={`mt-2 text-m font-black`}>
+            <p className={`mt-2 text-base font-black`}>
               21.25 L
             </p>
             
