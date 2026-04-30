@@ -27,7 +27,7 @@ const testimonials = [
     name: "Ankur Gupta",
     role: "Director",
     image: "/testimonials/AnkurGupta.jpeg",
-    text: "I am completely satisfied with the way Siddharth has handled my investments. Watching my portfolio grow alongside his guidance has been a great experienceThank you Siddharth and all the best.",
+    text: "I am completely satisfied with the way Siddharth has handled my investments. Watching my portfolio grow alongside his guidance has been a great experience Thank you Siddharth and all the best.",
   },
   {
     name: "Diksha Yede",
