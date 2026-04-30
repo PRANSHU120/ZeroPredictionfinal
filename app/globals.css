@@ -172,3 +172,20 @@ body {
 .animate-testimonial-marquee {
   animation: testimonial-marquee 35s linear infinite;
 }
+
+@keyframes testimonialCrawler {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.testimonial-crawler-track {
+  animation: testimonialCrawler 34s linear infinite;
+}
+
+.testimonial-crawler-wrap:hover .testimonial-crawler-track {
+  animation-play-state: paused;
+}

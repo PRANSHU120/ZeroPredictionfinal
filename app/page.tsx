@@ -22,7 +22,7 @@ import SectionHeader from "../components/SectionHeader";
 import TradingDashboard from "../components/TradingDashboard";
 import BrowserBackScrollHandler from "../components/BrowserBackScrollHandler";
 import PerformanceTable from "../components/PerformanceTable";
-/* import TestimonialsTicker from "../components/TestimonialsTicker"; */
+import TestimonialsTicker from "../components/TestimonialsTicker"; 
 
 const TRADETRON_LINK = "https://tradetron.tech/strategy/9631310";
 const EMAIL = "support@zeroprediction.in";
@@ -343,7 +343,7 @@ export default function Home() {
         </motion.div>
       </motion.section>
 
-      {/*  <motion.section
+      {<motion.section
         id="testimonials"
         variants={sectionReveal}
         initial="hidden"
@@ -366,7 +366,7 @@ export default function Home() {
         >
           <TestimonialsTicker />
         </motion.div>
-      </motion.section> */}
+      </motion.section> }
 <motion.section
   id="pricing"
   variants={sectionReveal}

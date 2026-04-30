@@ -8,6 +8,7 @@ const links = [
   ["Purpose", "purpose"],
   ["Offering", "offering"],
   ["Performance", "performance"],
+  ["Testimonials", "testimonials"],
   ["About", "about"],
   ["Podcasts", "insights"],
   ["Contact", "contact"],
