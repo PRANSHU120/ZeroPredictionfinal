@@ -13,7 +13,7 @@ import { useMemo, useState } from "react";
 const testimonials = [
   {
     name: "Gaurav Karwa",
-    role: "Senior Data Analytics",
+    role: "Senior Data Analyst",
     image: "/testimonials/GauravKarva.jpeg",
     text: "I have known Siddharth for more than 15 years now. His technical knowledge of the stock market has been impressive over the last couple of years. He has been able to generate good profit for me without me doing anything.",
   },
