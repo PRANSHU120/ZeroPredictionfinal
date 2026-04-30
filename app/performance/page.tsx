@@ -13,7 +13,7 @@ type PerformanceRow = {
   month: string;
   trades: string;
   netPnl: string;
-  cagr: string;
+  capitalUsed: string;
 };
 
 const LOCAL_FALLBACK_CSV = "/data/performance.csv";
@@ -58,10 +58,10 @@ function parseCSV(text: string): string[][] {
 function findColumn(
   headers: string[],
   matchers: ((header: string) => boolean)[],
-  fallback: number,
+  fallback: number
 ) {
   const index = headers.findIndex((header) =>
-    matchers.some((matcher) => matcher(header)),
+    matchers.some((matcher) => matcher(header))
   );
 
   return index >= 0 ? index : fallback;
@@ -118,6 +118,11 @@ function formatNumber(value: string): string {
   return Number.isFinite(parsed) ? parsed.toLocaleString("en-IN") : value;
 }
 
+function formatCapitalUsed(value: number): string {
+  if (!Number.isFinite(value) || value === 0) return "-";
+  return `${value.toFixed(2)} L`;
+}
+
 function pnlClass(value: string) {
   const amount = numberFromMoney(value);
 
@@ -127,7 +132,7 @@ function pnlClass(value: string) {
   return "text-charcoal";
 }
 
-function cagrClass(value: string) {
+function capitalClass(value: string) {
   const amount = numberFromMoney(value);
 
   if (amount < 0) return "text-red-600";
@@ -141,35 +146,36 @@ function mapPerformanceRows(text: string): PerformanceRow[] {
   const [headers = [], ...dataRows] = csvRows;
 
   const normalizedHeaders = headers.map((header) =>
-    header.trim().toLowerCase(),
+    header.trim().toLowerCase()
   );
 
   const monthIndex = findColumn(
     normalizedHeaders,
     [(h) => ["month", "date"].includes(h)],
-    0,
+    0
   );
 
   const tradesIndex = findColumn(
     normalizedHeaders,
     [(h) => h.includes("trade")],
-    1,
+    1
   );
 
   const netPnlIndex = findColumn(
     normalizedHeaders,
     [(h) => h.includes("net") && h.includes("pnl"), (h) => h === "pnl"],
-    2,
+    2
   );
 
-  const cagrIndex = findColumn(
+  const capitalUsedIndex = findColumn(
     normalizedHeaders,
     [
-      (h) => h.includes("cagr"),
-      (h) => h.includes("roi"),
-      (h) => h.includes("return"),
+      (h) => h.includes("capital") && h.includes("used"),
+      (h) => h.includes("avg") && h.includes("capital"),
+      (h) => h.includes("average") && h.includes("capital"),
+      (h) => h.includes("capital"),
     ],
-    3,
+    3
   );
 
   return dataRows
@@ -177,13 +183,13 @@ function mapPerformanceRows(text: string): PerformanceRow[] {
       month: formatMonth(cells[monthIndex] || "-"),
       trades: cleanTrades(cells[tradesIndex] || "0"),
       netPnl: cells[netPnlIndex] || "-",
-      cagr: cells[cagrIndex] || "-",
+      capitalUsed: cells[capitalUsedIndex] || "-",
     }))
     .filter(
       (item) =>
         item.month !== "-" &&
         item.month.toLowerCase() !== "month" &&
-        item.month.toLowerCase() !== "date",
+        item.month.toLowerCase() !== "date"
     );
 }
 
@@ -203,12 +209,12 @@ export default function FullPerformancePage() {
           `${GOOGLE_SHEET_CSV_URL}${
             GOOGLE_SHEET_CSV_URL.includes("?") ? "&" : "?"
           }cacheBust=${Date.now()}`,
-          { cache: "no-store" },
+          { cache: "no-store" }
         );
 
         if (!response.ok) {
           throw new Error(
-            "Performance sheet could not be loaded. Please check the published CSV link.",
+            "Performance sheet could not be loaded. Please check the published CSV link."
           );
         }
 
@@ -225,13 +231,13 @@ export default function FullPerformancePage() {
           new Date().toLocaleString("en-IN", {
             dateStyle: "medium",
             timeStyle: "short",
-          }),
+          })
         );
       } catch (err) {
         setError(
           err instanceof Error
             ? err.message
-            : "Unable to load performance data.",
+            : "Unable to load performance data."
         );
       } finally {
         setLoading(false);
@@ -247,20 +253,28 @@ export default function FullPerformancePage() {
 
     const totalTrades = rows.reduce(
       (sum, row) => sum + Number(cleanTrades(row.trades)),
-      0,
+      0
     );
 
     const netPnl = rows.reduce(
       (sum, row) => sum + numberFromMoney(row.netPnl),
-      0,
+      0
     );
+
+    const totalCapitalUsed = rows.reduce(
+      (sum, row) => sum + numberFromMoney(row.capitalUsed),
+      0
+    );
+
+    const averageCapitalUsed =
+      rows.length > 1 ? totalCapitalUsed / (rows.length) : totalCapitalUsed;
 
     return {
       evaluationPeriod:
         oldest && latest ? `${oldest.month} - ${latest.month}` : "-",
       totalTrades: totalTrades.toString(),
       netPnl,
-      cagr: latest?.cagr || "-",
+      averageCapitalUsed,
     };
   }, [rows]);
 
@@ -316,7 +330,7 @@ export default function FullPerformancePage() {
                 </p>
                 <p
                   className={`mt-2 text-lg font-black ${pnlClass(
-                    String(summary.netPnl),
+                    String(summary.netPnl)
                   )}`}
                 >
                   {formatCurrency(summary.netPnl)}
@@ -325,15 +339,16 @@ export default function FullPerformancePage() {
 
               <div className="rounded-2xl bg-white p-4 text-center shadow-sm">
                 <p className="text-xs font-black uppercase tracking-[0.16em] text-charcoal/45">
-                  AVG CAPITAL USED
+                  Avg Capital Used
                 </p>
-                <p className={`mt-2 text-m font-black`}>21.25 L</p>
+                <p className="mt-2 text-lg font-black text-charcoal">
+                  {formatCapitalUsed(summary.averageCapitalUsed)}
+                </p>
               </div>
             </div>
 
             <div className="mt-4 flex flex-col gap-2 text-xs font-semibold text-charcoal/55 sm:flex-row sm:items-center sm:justify-between">
               <span>Last synced: {updatedAt || "Not loaded yet"}</span>
-              <span></span>
             </div>
           </div>
 
@@ -362,15 +377,18 @@ export default function FullPerformancePage() {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[760px] text-left text-sm text-centre">
-                <thead className="bg-white text-charcoal/70 text-center">
+              <table className="w-full min-w-[760px] text-sm">
+                <thead className="bg-white text-center text-charcoal/70">
                   <tr>
                     {["Month", "Number of Trades", "Net PNL", "Capital Used"].map(
                       (header) => (
-                        <th key={header} className="px-6 py-4 font-black ">
+                        <th
+                          key={header}
+                          className="px-6 py-4 text-center font-black"
+                        >
                           {header}
                         </th>
-                      ),
+                      )
                     )}
                   </tr>
                 </thead>
@@ -379,26 +397,30 @@ export default function FullPerformancePage() {
                   {rows.map((row, index) => (
                     <tr
                       key={`${row.month}-${index}`}
-                      className="border-t border-emerald-900/10 transition hover:bg-mintSoft/50 text-center"
+                      className="border-t border-emerald-900/10 text-center transition hover:bg-mintSoft/50"
                     >
-                      <td className="px-6 py-4 font-bold text-charcoal text-center">
+                      <td className="px-6 py-4 text-center font-bold text-charcoal">
                         {row.month}
                       </td>
 
-                      <td className="px-6 py-4 font-bold text-charcoal/75 text-centre">
+                      <td className="px-6 py-4 text-center font-bold text-charcoal/75">
                         {formatNumber(row.trades)}
                       </td>
 
                       <td
-                        className={`px-6 py-4 font-bold ${pnlClass(row.netPnl)}`}
+                        className={`px-6 py-4 text-center font-bold ${pnlClass(
+                          row.netPnl
+                        )}`}
                       >
                         {row.netPnl}
                       </td>
 
                       <td
-                        className={`px-6 py-4 font-bold ${cagrClass(row.cagr)}`}
+                        className={`px-6 py-4 text-center font-bold ${capitalClass(
+                          row.capitalUsed
+                        )}`}
                       >
-                        {row.cagr}
+                        {row.capitalUsed}
                       </td>
                     </tr>
                   ))}

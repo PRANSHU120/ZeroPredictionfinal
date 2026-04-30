@@ -13,13 +13,13 @@ import { useMemo, useState } from "react";
 const testimonials = [
   {
     name: "Gaurav Karwa",
-    role: "Senior Data & Analytics",
+    role: "Senior Data Analytics",
     image: "/testimonials/GauravKarva.jpeg",
     text: "I have known Siddharth for more than 15 years now. His technical knowledge of the stock market has been impressive over the last couple of years. He has been able to generate good profit for me without me doing anything.",
   },
   {
     name: "Ankita Jain",
-    role: "Specialist, Data & Analytics",
+    role: "Specialist, Data Analytics",
     image: "/testimonials/AnkitaJain.jpeg",
     text: "I am extremely satisfied with the way my investments have been handled by Siddharth Bisen. His professional approach, transparency and deep understanding of the market have given me complete confidence in my investments.",
   },

@@ -13,7 +13,7 @@ type PerformanceRow = {
   month: string;
   trades: string;
   netPnl: string;
-  cagr: string;
+  capitalUsed: string;
 };
 
 const LOCAL_FALLBACK_CSV = "/data/performance.csv";
@@ -93,6 +93,11 @@ function formatNumber(value: string): string {
   return Number.isFinite(parsed) ? parsed.toLocaleString("en-IN") : value;
 }
 
+function formatCapitalUsed(value: number): string {
+  if (!Number.isFinite(value) || value === 0) return "-";
+  return `${value.toFixed(2)} L`;
+}
+
 function pnlClass(value: string) {
   const amount = numberFromMoney(value);
 
@@ -102,7 +107,7 @@ function pnlClass(value: string) {
   return "text-charcoal";
 }
 
-function cagrClass(value: string) {
+function capitalClass(value: string) {
   const amount = numberFromMoney(value);
 
   if (amount < 0) return "text-red-600";
@@ -140,12 +145,13 @@ function mapPerformanceRows(text: string): PerformanceRow[] {
     2
   );
 
-  const cagrIndex = findColumn(
+  const capitalUsedIndex = findColumn(
     normalizedHeaders,
     [
-      (h) => h.includes("cagr"),
-      (h) => h.includes("roi"),
-      (h) => h.includes("return"),
+      (h) => h.includes("capital") && h.includes("used"),
+      (h) => h.includes("avg") && h.includes("capital"),
+      (h) => h.includes("average") && h.includes("capital"),
+      (h) => h.includes("capital"),
     ],
     3
   );
@@ -155,7 +161,7 @@ function mapPerformanceRows(text: string): PerformanceRow[] {
       month: cells[monthIndex] || "-",
       trades: cleanTrades(cells[tradesIndex] || "0"),
       netPnl: cells[netPnlIndex] || "-",
-      cagr: cells[cagrIndex] || "-",
+      capitalUsed: cells[capitalUsedIndex] || "-",
     }))
     .filter(
       (item) =>
@@ -235,12 +241,20 @@ export default function PerformanceTable() {
       0
     );
 
+    const totalCapitalUsed = rows.reduce(
+      (sum, row) => sum + numberFromMoney(row.capitalUsed),
+      0
+    );
+
+    const averageCapitalUsed =
+      rows.length > 1 ? totalCapitalUsed / (rows.length) : totalCapitalUsed;
+
     return {
       evaluationPeriod:
         oldest && latest ? `${oldest.month} - ${latest.month}` : "-",
       totalTrades: totalTrades.toString(),
       netPnl,
-      cagr: latest?.cagr || "-",
+      averageCapitalUsed,
     };
   }, [rows]);
 
@@ -259,8 +273,6 @@ export default function PerformanceTable() {
             <h3 className="text-2xl font-black text-charcoal">
               Performance View
             </h3>
-
-            
           </div>
         </div>
 
@@ -277,7 +289,7 @@ export default function PerformanceTable() {
             </p>
           </div>
 
-          <div className="rounded-2xl bg-white p-3  shadow-sm text-center">
+          <div className="rounded-2xl bg-white p-3 text-center shadow-sm">
             <p className="text-xs font-black uppercase tracking-[0.16em] text-charcoal/45">
               Total Trades
             </p>
@@ -298,24 +310,20 @@ export default function PerformanceTable() {
             >
               {formatCurrency(summary.netPnl)}
             </p>
-
-            
           </div>
 
           <div className="rounded-2xl bg-white p-3 text-center shadow-sm">
             <p className="text-xs font-black uppercase tracking-[0.16em] text-charcoal/45">
               Avg Capital Used
             </p>
-            <p className={`mt-2 text-base font-black`}>
-              21.25 L
+            <p className="mt-2 text-base font-black text-charcoal">
+              {formatCapitalUsed(summary.averageCapitalUsed)}
             </p>
-            
           </div>
         </div>
 
         <div className="mt-4 flex flex-col gap-2 text-xs font-semibold text-charcoal/55 sm:flex-row sm:items-center sm:justify-between">
           <span>Last synced: {updatedAt || "Not loaded yet"}</span>
-
         </div>
       </div>
 
@@ -349,7 +357,10 @@ export default function PerformanceTable() {
               <tr>
                 {["Month", "Number of Trades", "Net PNL", "Capital Used"].map(
                   (header) => (
-                    <th key={header} className="px-6 py-4 font-black text-center">
+                    <th
+                      key={header}
+                      className="px-6 py-4 text-center font-black"
+                    >
                       {header}
                     </th>
                   )
@@ -361,22 +372,30 @@ export default function PerformanceTable() {
               {visibleRows.map((row, index) => (
                 <tr
                   key={`${row.month}-${index}`}
-                  className="border-t border-emerald-900/10 transition hover:bg-mintSoft/50 text-center"
+                  className="border-t border-emerald-900/10 text-center transition hover:bg-mintSoft/50"
                 >
-                  <td className="px-6 py-4 font-bold text-charcoaltext-center text-center">
+                  <td className="px-6 py-4 text-center font-bold text-charcoal">
                     {row.month}
                   </td>
 
-                  <td className="px-6 py-4 font-bold text-charcoal/75 text- right text-center">
+                  <td className="px-6 py-4 text-center font-bold text-charcoal/75">
                     {formatNumber(row.trades)}
                   </td>
 
-                  <td className={`px-6 py-4 font-bold ${pnlClass(row.netPnl)}`} >
-                    {row.netPnl} 
+                  <td
+                    className={`px-6 py-4 text-center font-bold ${pnlClass(
+                      row.netPnl
+                    )}`}
+                  >
+                    {row.netPnl}
                   </td>
 
-                  <td className={`px-6 py-4 font-bold text-center ${cagrClass(row.cagr)}`}>
-                    {row.cagr}
+                  <td
+                    className={`px-6 py-4 text-center font-bold ${capitalClass(
+                      row.capitalUsed
+                    )}`}
+                  >
+                    {row.capitalUsed}
                   </td>
                 </tr>
               ))}
