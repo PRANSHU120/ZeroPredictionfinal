@@ -480,7 +480,7 @@ export default function Home() {
 
         <motion.a
           {...buttonMotion}
-          href="#contact"
+          href="contact"
           className="inline-flex w-full items-center justify-center rounded-full border border-forest/15 px-5 py-3 text-center text-sm font-extrabold text-forest transition hover:bg-mintSoft sm:text-base"
         >
           Contact Us

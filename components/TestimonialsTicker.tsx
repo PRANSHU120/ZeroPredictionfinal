@@ -13,7 +13,7 @@ import { useMemo, useState } from "react";
 const testimonials = [
   {
     name: "Gaurav Karwa",
-    role: "Founder, Bix42",
+    role: "Senior Data & Analytics",
     image: "/testimonials/GauravKarva.jpeg",
     text: "I have known Siddharth for more than 15 years now. His technical knowledge of the stock market has been impressive over the last couple of years. He has been able to generate good profit for me without me doing anything.",
   },
@@ -30,7 +30,7 @@ const testimonials = [
     text: "I am completely satisfied with the way Siddharth has handled my investments. Watching my portfolio grow alongside his guidance has been a great experienceThank you Siddharth and all the best.",
   },
   {
-    name: "Disha Yede",
+    name: "Diksha Yede",
     role: "Sustainable Specialist",
     image: "/testimonials/DishaYede.jpeg",
     text: "I started trading with no idea what I was doing, and finding Siddharth honestly made things so much easier. He explains things clearly, and I’ve seen real progress. Really grateful for his support—highly recommend!",
@@ -42,10 +42,10 @@ const testimonials = [
     text: "Siddharth transformed my approach to investing with his sharp market insights and hands-on guidance. From day one, his transparency and proven strategies delivered steady growth in my portfolio. Highly recommend him for anyone serious about trading success!",
   },
   {
-    name: "Rajesh Dadugu",
+    name: "Rajesh Dudugu",
     role: "Senior Consultant",
     image: "/testimonials/RajeshDadugu.jpeg",
-    text: "I started my trading journey with zero knowledge, and I’m truly grateful to have found a financial advisor Siddharth who guided me every step of the way. Siddharth’s expertise, patience, and clear strategies made a huge difference—not only did I learn, but I also saw consistent profits.He handled everything with professionalism and transparency, which gave me complete confidence throughout the process. Highly appreciate Siddharth’s dedication and support—definitely someone you can trust if you're stepping into trading!",
+    text: "I started my trading journey with zero knowledge, and I’m truly grateful to have found a financial advisor Siddharth who guided me every step of the way. Highly appreciate Siddharth’s dedication and support—definitely someone you can trust if you're stepping into trading!",
   },
 ];
 
